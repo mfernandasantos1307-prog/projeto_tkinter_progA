@@ -125,27 +125,30 @@ botao_rosa = Button(frame_ferramentas, bg="pink", width=2, command=lambda: selec
 botao_roxo = Button(frame_ferramentas, bg="purple", width=2, command=lambda: selecionar_cor("purple"))
 botao_marrom = Button(frame_ferramentas, bg="brown", width=2, command=lambda: selecionar_cor("brown"))
 botao_cinza = Button(frame_ferramentas, bg="gray", width=2, command=lambda: selecionar_cor("gray"))
+botao_transparente = Button(frame_ferramentas, text="X", bg="lightgray", width=2, command=lambda: selecionar_cor(""))
+botao_laranja = Button(frame_ferramentas, bg="orange", width=2, command=lambda: selecionar_cor("orange"))
 
 # Organização usando Grid dentro do frame_ferramentas
 selecionar_borda.grid(row=0, column=0, padx=5, pady=2, sticky=W)
 selecionar_preenchimento.grid(row=1, column=0, padx=5, pady=2, sticky=W)
 
 # Linha de cima de cores
-botao_preto.grid(row=0, column=1, padx=2, pady=2)
-botao_vermelho.grid(row=0, column=2, padx=2, pady=2)
-botao_azul.grid(row=0, column=3, padx=2, pady=2)
-botao_rosa.grid(row=0, column=4, padx=2, pady=2)
-botao_marrom.grid(row=0, column=5, padx=2, pady=2)
+botao_preto.grid(row=2, column=1, padx=2, pady=2)
+botao_vermelho.grid(row=2, column=2, padx=2, pady=2)
+botao_azul.grid(row=2, column=3, padx=2, pady=2)
+botao_rosa.grid(row=2, column=4, padx=2, pady=2)
+botao_marrom.grid(row=2, column=5, padx=2, pady=2)
+botao_laranja.grid(row=2, column=6, padx=2, pady=2)
 
-# Linha de baixo de cores
-botao_branco.grid(row=1, column=1, padx=2, pady=2)
-botao_verde.grid(row=1, column=2, padx=2, pady=2)
-botao_amarelo.grid(row=1, column=3, padx=2, pady=2)
-botao_roxo.grid(row=1, column=4, padx=2, pady=2)
-botao_cinza.grid(row=1, column=5, padx=2, pady=2)
+# Debaixo das cores
+botao_transparente.grid(row=3, column=1, padx=2, pady=2)
+botao_branco.grid(row=3, column=2, padx=2, pady=2)
+botao_verde.grid(row=3, column=3, padx=2, pady=2)
+botao_amarelo.grid(row=3, column=4, padx=2, pady=2)
+botao_roxo.grid(row=3, column=5, padx=2, pady=2)
+botao_cinza.grid(row=3, column=6, padx=2, pady=2)
 
-# Botão mais cores na lateral
-selecionar_mais_cores.grid(row=0, column=6, rowspan=2, padx=5, pady=2)
+selecionar_mais_cores.grid(row=2, column=7, rowspan=2, padx=5, pady=2)
 
 # Vinculando os eventos do mouse ao canvas
 canvas.bind('<ButtonPress-1>', inicia_linha)
