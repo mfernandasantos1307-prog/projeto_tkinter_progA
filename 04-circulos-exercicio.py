@@ -13,21 +13,24 @@ def inicia_linha(event):
 # Quando o mouse é movido com o botão pressionado
 def atualiza_linha(event):
     global fim_x, fim_y, raio
+    global cor_borda_atual, cor_preenchimento_atual
+    
     fim_x = event.x
     fim_y = event.y
     desenhar()
     raio = ( (ini_x - fim_x)**2 + (ini_y - fim_y)**2 ) ** 0.5
-    canvas.create_oval(ini_x-raio, ini_y-raio, ini_x+raio, ini_y+raio)
+    canvas.create_oval(ini_x-raio, ini_y-raio, ini_x+raio, ini_y+raio, outline=cor_borda_atual, fill=cor_preenchimento_atual))
 
 # Quando o mouse é solto
 def incluir_linha(event):
-    circulos.append((ini_x, ini_y, raio))
+    global cor_borda_atual, cor_preenchimento_atual # adicionei essa linha para a implementação das cores, essas variaveis ainda não estão nesse codigo
+    circulos.append((ini_x, ini_y, raio, cor_borda_atual, cor_prenchimento_atual))
 
 def desenhar():
     canvas.delete("all")
     for circulo in circulos:
-        x, y, r = circulo
-        canvas.create_oval(x-r, y-r, x+r, y+r)
+        x, y, r, cor_b, cor_p = circulo
+        canvas.create_oval(x-r, y-r, x+r, y+r, outline=cor_b, fill=cor_p)
 
 
 
