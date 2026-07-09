@@ -1,7 +1,7 @@
 from tkinter import Button, colorchooser
 
 cor_borda_atual = 'black'
-cor_preenchimento_atual = 'white'
+cor_preenchimento_atual = ''
 modo_cor = 'preenchimento'
 
 # Função para preenchimento com a tabela
