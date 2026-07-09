@@ -7,7 +7,7 @@ from tkinter import colorchooser
 
 # Variáveis globais para armazenar o estado atual das cores
 cor_borda_atual = 'black'
-cor_preenchimento_atual = 'white'
+cor_preenchimento_atual = ''
 modo_cor = 'preenchimento'  # Começa definindo o preenchimento por padrão
 
 # Função que os quadradinhos da tabela vão chamar
