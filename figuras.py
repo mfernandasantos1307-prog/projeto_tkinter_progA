@@ -84,8 +84,9 @@ def finalizar_circulo(event):
         + (ini_y - fim_y) ** 2
     ) ** 0.5
 
-    circulos.append(
+    figuras.append(
         (
+            'circulo',
             ini_x,
             ini_y,
             raio_final,
@@ -95,26 +96,9 @@ def finalizar_circulo(event):
     )
 
 
-# Redesenha todos os círculos já finalizados
-def desenhar_circulos():
-    for circulo in circulos:
-        x, y, raio_circulo, cor_borda, cor_preenchimento = circulo
-
-        canvas.create_oval(
-            x - raio_circulo,
-            y - raio_circulo,
-            x + raio_circulo,
-            y + raio_circulo,
-            outline=cor_borda,
-            fill=cor_preenchimento
-        )
-
-
 # ==========================================
 #LÓGICA DO RETÂNGULO
 # ==========================================
-retangulos = []
-
 
 def iniciar_retangulo(event):
     global ini_x, ini_y
@@ -145,8 +129,9 @@ def finalizar_retangulo(event):
     fim_x = event.x
     fim_y = event.y
 
-    retangulos.append(
+    figuras.append(
         (
+            'retangulo',
             ini_x,
             ini_y,
             fim_x,
@@ -157,31 +142,9 @@ def finalizar_retangulo(event):
     )
 
 
-def desenhar_retangulos():
-    for retangulo in retangulos:
-        (
-            x_inicial,
-            y_inicial,
-            x_final,
-            y_final,
-            cor_borda,
-            cor_preenchimento
-        ) = retangulo
-
-        canvas.create_rectangle(
-            x_inicial,
-            y_inicial,
-            x_final,
-            y_final,
-            outline=cor_borda,
-            fill=cor_preenchimento
-        )
 # ==========================================
 #LÓGICA DO OVAL
 # ==========================================
-
-ovais = []
-
 
 def iniciar_oval(event):
     global ini_x, ini_y
@@ -214,8 +177,9 @@ def finalizar_oval(event):
     fim_x = event.x
     fim_y = event.y
 
-    ovais.append(
+    figuras.append(
         (
+            'oval',
             ini_x,
             ini_y,
             fim_x,
@@ -225,26 +189,6 @@ def finalizar_oval(event):
         )
     )
 
-
-def desenhar_ovais():
-    for oval in ovais:
-        (
-            x_inicial,
-            y_inicial,
-            x_final,
-            y_final,
-            cor_borda,
-            cor_preenchimento
-        ) = oval
-
-        canvas.create_oval(
-            x_inicial,
-            y_inicial,
-            x_final,
-            y_final,
-            outline=cor_borda,
-            fill=cor_preenchimento
-        )
 
 # ==========================================
 #CONTROLE DOS EVENTOS
@@ -287,15 +231,47 @@ def finalizar_figura(event):
 def desenhar_figuras():
     canvas.delete("all")
 
-    desenhar_circulos()
-    desenhar_retangulos()
-    desenhar_ovais()
+    for figura in figuras:
+        tipo = figura[0]
+
+        if tipo == 'circulo':
+            _, x, y, raio_figura, cor_borda, cor_preenchimento = figura
+            canvas.create_oval(
+                x - raio_figura,
+                y - raio_figura, 
+                x + raio_figura,
+                y + raio_figura,
+                outline=cor_borda,
+                fill=cor_preenchimento
+            )
+        
+        elif tipo == 'retangulo':
+            _, x_inicial, y_inicial, x_final, y_final, cor_borda, cor_preenchimento = figura
+            canvas.create_rectangle(
+                x_inicial,
+                y_inicial,
+                x_final,
+                y_final,
+                outline=cor_borda,
+                fill=cor_preenchimento
+            )
+        
+        elif tipo == 'oval':
+            _, x_inicial, y_inicial, x_final, y_final, cor_borda, cor_preenchimento = figura
+            canvas.create_oval(
+                x_inicial, 
+                y_inicial,
+                x_final,
+                y_final,
+                outline=cor_borda,
+                fill=cor_preenchimento
+            )
 
 # ==========================================
 # PROGRAMA PRINCIPAL
 # ==========================================
 
-circulos = []
+figuras = []
 
 raio = None
 ini_x = None
