@@ -297,7 +297,7 @@ cores.criar_paleta(frame_ferramentas)
 #Botões para selecionar a figura
 botao_circulo = Button(
     frame_ferramentas,
-    text="◯ Cículo",
+    text="◯ Círculo",
     width=10,
     command=selecionar_circulo
 )
