@@ -3,7 +3,7 @@ from tkinter import *
 import cores
 
 # ==========================================
-#SELEÇÃO DE FERRAMENTAS
+#SELETOR DE FERRAMENTAS
 # ==========================================
 
 ferramenta_atual = "circulo"
@@ -271,10 +271,6 @@ def desenhar_figuras():
     desenhar_retangulos()
     desenhar_ovais()
 
-    # ADICIONAR desenhar_retangulos()
-    # ACIDICIONAR desenhar_ovais()
-
-
 # ==========================================
 # PROGRAMA PRINCIPAL
 # ==========================================
@@ -301,6 +297,30 @@ frame_ferramentas.pack(
 
 # Cria a paleta usando o módulo de cores
 cores.criar_paleta(frame_ferramentas)
+
+#Botões para selecionar a figura
+botao_circulo = Button(
+    frame_ferramentas,
+    text="Círculo",
+    command=selecionar_circulo
+)
+
+botao_retangulo = Button(
+    frame_ferramentas,
+    text="Retângulo",
+    command=selecionar_retangulo
+)
+
+botao_oval = Button(
+    frame_ferramentas,
+    text="Oval",
+    command=selecionar_oval
+)
+
+# Posicionamento dos botões
+botao_circulo.grid(row=0, column=8, padx=5, pady=2)
+botao_retangulo.grid(row=1, column=8, padx=5, pady=2)
+botao_oval.grid(row=2, column=8, padx=5, pady=2)
 
 # Área de desenho
 canvas = Canvas(
