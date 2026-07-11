@@ -229,7 +229,37 @@ def desenhar_ovais():
 # ==========================================
 #CONTROLE DOS EVENTOS
 # ==========================================
+def iniciar_figura(event):
+    if ferramenta_atual == "circulo":
+        iniciar_circulo(event)
 
+    elif ferramenta_atual == "retangulo":
+        iniciar_retangulo(event)
+
+    elif ferramenta_atual == "oval":
+        iniciar_oval(event)
+
+
+def atualizar_figura(event):
+    if ferramenta_atual == "circulo":
+        atualizar_circulo(event)
+
+    elif ferramenta_atual == "retangulo":
+        atualizar_retangulo(event)
+
+    elif ferramenta_atual == "oval":
+        atualizar_oval(event)
+
+
+def finalizar_figura(event):
+    if ferramenta_atual == "circulo":
+        finalizar_circulo(event)
+
+    elif ferramenta_atual == "retangulo":
+        finalizar_retangulo(event)
+
+    elif ferramenta_atual == "oval":
+        finalizar_oval(event)
 # ==========================================
 #REDESENHO GERAL DAS FIGURAS
 # ==========================================
@@ -281,9 +311,8 @@ canvas = Canvas(
 )
 canvas.pack()
 
-# Por enquanto os eventos do mouse chamam apenas o círculo
-canvas.bind("<ButtonPress-1>", iniciar_circulo)
-canvas.bind("<B1-Motion>", atualizar_circulo)
-canvas.bind("<ButtonRelease-1>", finalizar_circulo)
+canvas.bind("<ButtonPress-1>", iniciar_figura)
+canvas.bind("<B1-Motion>", atualizar_figura)
+canvas.bind("<ButtonRelease-1>", finalizar_figura)
 
 root.mainloop()
