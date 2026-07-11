@@ -64,11 +64,19 @@ def atualizar_circulo(event):
 
 # Quando o mouse é solto, salva o círculo
 def finalizar_circulo(event):
+    fim_x = event.x
+    fim_y = event.y
+
+    raio_final = (
+        (ini_x - fim_x) ** 2
+        + (ini_y - fim_y) ** 2
+    ) ** 0.5
+
     circulos.append(
         (
             ini_x,
             ini_y,
-            raio,
+            raio_final,
             cores.cor_borda_atual,
             cores.cor_preenchimento_atual
         )
