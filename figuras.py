@@ -12,15 +12,27 @@ def selecionar_circulo():
     global ferramenta_atual
     ferramenta_atual = "circulo"
 
+    botao_circulo.config(relief=SUNKEN)
+    botao_retangulo.config(relief=RAISED)
+    botao_oval.config(relief=RAISED)
+
 
 def selecionar_retangulo():
     global ferramenta_atual
     ferramenta_atual = "retangulo"
 
+    botao_circulo.config(relief=RAISED)
+    botao_retangulo.config(relief=SUNKEN)
+    botao_oval.config(relief=RAISED)
+
 
 def selecionar_oval():
     global ferramenta_atual
     ferramenta_atual = "oval"
+
+    botao_circulo.config(relief=RAISED)
+    botao_retangulo.config(relief=RAISED)
+    botao_oval.config(relief=SUNKEN)
 
 
 # ==========================================
@@ -309,21 +321,26 @@ cores.criar_paleta(frame_ferramentas)
 #Botões para selecionar a figura
 botao_circulo = Button(
     frame_ferramentas,
-    text="Círculo",
+    text="◯ Cículo",
+    width=10,
     command=selecionar_circulo
 )
 
 botao_retangulo = Button(
     frame_ferramentas,
-    text="Retângulo",
+    text="▭ Retângulo",
+    width=10,
     command=selecionar_retangulo
 )
 
 botao_oval = Button(
     frame_ferramentas,
-    text="Oval",
+    text="⬭ Oval",
+    width=10,
     command=selecionar_oval
 )
+
+botao_circulo.config(relief=SUNKEN)
 
 # Posicionamento dos botões
 botao_circulo.grid(row=0, column=8, padx=5, pady=2)

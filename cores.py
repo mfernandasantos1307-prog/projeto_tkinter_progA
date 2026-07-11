@@ -1,4 +1,4 @@
-from tkinter import Button, colorchooser
+from tkinter import Button, colorchooser, RAISED, SUNKEN
 
 
 #VARIÁVEIS GLOBAIS
@@ -28,11 +28,16 @@ def ativar_modo_borda():
     global modo_cor
     modo_cor = "borda"
 
+    selecionar_borda.config(relief=SUNKEN)
+    selecionar_preenchimento.config(relief=RAISED)
+
 
 def ativar_modo_preenchimento():
     global modo_cor
     modo_cor = "preenchimento"
 
+    selecionar_borda.config(relief=RAISED)
+    selecionar_preenchimento.config(relief=SUNKEN)
 
 def escolher_cor_extra():
     global cor_preenchimento_atual
@@ -50,6 +55,9 @@ def escolher_cor_extra():
 #INTERFACE DA PALETA
 
 def criar_paleta(frame):
+
+    global selecionar_borda
+    global selecionar_preenchimento
 
     selecionar_borda = Button(
         frame,
