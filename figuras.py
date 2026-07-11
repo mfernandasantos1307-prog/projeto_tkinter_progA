@@ -2,6 +2,26 @@ from tkinter import *
 
 import cores
 
+# ==========================================
+#SELEÇÃO DE FERRAMENTAS
+# ==========================================
+
+ferramenta_atual = "circulo"
+
+def selecionar_circulo():
+    global ferramenta_atual
+    ferramenta_atual = "circulo"
+
+
+def selecionar_retangulo():
+    global ferramenta_atual
+    ferramenta_atual = "retangulo"
+
+
+def selecionar_oval():
+    global ferramenta_atual
+    ferramenta_atual = "oval"
+
 
 # ==========================================
 # LÓGICA DO CÍRCULO
