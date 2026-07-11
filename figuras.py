@@ -4,11 +4,11 @@ import cores
 
 
 # ==========================================
-# LÓGICA DE DESENHO
+# LÓGICA DO CÍRCULO
 # ==========================================
 
-# Quando o mouse é pressionado
-def inicia_desenho(event):
+# Quando o mouse é pressionado para iniciar um círculo
+def iniciar_circulo(event):
     global ini_x, ini_y
 
     ini_x = event.x
@@ -16,14 +16,14 @@ def inicia_desenho(event):
 
 
 # Quando o mouse é movido com o botão pressionado
-def atualiza_desenho(event):
+def atualizar_circulo(event):
     global fim_x, fim_y, raio
 
     fim_x = event.x
     fim_y = event.y
 
-    # Redesenha os círculos já finalizados
-    desenhar()
+    # Redesenha todas as figuras já finalizadas
+    desenhar_figuras()
 
     # Calcula a distância entre o centro e o mouse
     raio = (
@@ -42,8 +42,8 @@ def atualiza_desenho(event):
     )
 
 
-# Quando o mouse é solto
-def finalizar_desenho(event):
+# Quando o mouse é solto, salva o círculo
+def finalizar_circulo(event):
     circulos.append(
         (
             ini_x,
@@ -55,21 +55,32 @@ def finalizar_desenho(event):
     )
 
 
-# Redesenha todos os círculos finalizados
-def desenhar():
-    canvas.delete("all")
-
+# Redesenha todos os círculos já finalizados
+def desenhar_circulos():
     for circulo in circulos:
-        x, y, r, cor_borda, cor_preenchimento = circulo
+        x, y, raio_circulo, cor_borda, cor_preenchimento = circulo
 
         canvas.create_oval(
-            x - r,
-            y - r,
-            x + r,
-            y + r,
+            x - raio_circulo,
+            y - raio_circulo,
+            x + raio_circulo,
+            y + raio_circulo,
             outline=cor_borda,
             fill=cor_preenchimento
         )
+
+
+# ==========================================
+# REDESENHO GERAL DAS FIGURAS
+# ==========================================
+
+def desenhar_figuras():
+    canvas.delete("all")
+
+    desenhar_circulos()
+
+    # ADICIONAR desenhar_retangulos()
+    # ACIDICIONAR desenhar_ovais()
 
 
 # ==========================================
@@ -96,7 +107,7 @@ frame_ferramentas.pack(
     pady=5
 )
 
-# Cria a paleta usando o módulo cores.py
+# Cria a paleta usando o módulo de cores
 cores.criar_paleta(frame_ferramentas)
 
 # Área de desenho
@@ -108,9 +119,9 @@ canvas = Canvas(
 )
 canvas.pack()
 
-# Eventos do mouse
-canvas.bind("<ButtonPress-1>", inicia_desenho)
-canvas.bind("<B1-Motion>", atualiza_desenho)
-canvas.bind("<ButtonRelease-1>", finalizar_desenho)
+# Por enquanto os eventos do mouse chamam apenas o círculo
+canvas.bind("<ButtonPress-1>", iniciar_circulo)
+canvas.bind("<B1-Motion>", atualizar_circulo)
+canvas.bind("<ButtonRelease-1>", finalizar_circulo)
 
 root.mainloop()
