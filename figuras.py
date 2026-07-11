@@ -91,7 +91,81 @@ def desenhar_circulos():
 
 
 # ==========================================
-# REDESENHO GERAL DAS FIGURAS
+#LÓGICA DO RETÂNGULO
+# ==========================================
+retangulos = []
+
+
+def iniciar_retangulo(event):
+    global ini_x, ini_y
+
+    ini_x = event.x
+    ini_y = event.y
+
+
+def atualizar_retangulo(event):
+    global fim_x, fim_y
+
+    fim_x = event.x
+    fim_y = event.y
+
+    desenhar_figuras()
+
+    canvas.create_rectangle(
+        ini_x,
+        ini_y,
+        fim_x,
+        fim_y,
+        outline=cores.cor_borda_atual,
+        fill=cores.cor_preenchimento_atual
+    )
+
+
+def finalizar_retangulo(event):
+    fim_x = event.x
+    fim_y = event.y
+
+    retangulos.append(
+        (
+            ini_x,
+            ini_y,
+            fim_x,
+            fim_y,
+            cores.cor_borda_atual,
+            cores.cor_preenchimento_atual
+        )
+    )
+
+
+def desenhar_retangulos():
+    for retangulo in retangulos:
+        (
+            x_inicial,
+            y_inicial,
+            x_final,
+            y_final,
+            cor_borda,
+            cor_preenchimento
+        ) = retangulo
+
+        canvas.create_rectangle(
+            x_inicial,
+            y_inicial,
+            x_final,
+            y_final,
+            outline=cor_borda,
+            fill=cor_preenchimento
+        )
+# ==========================================
+#LÓGICA DO OVAL
+# ==========================================
+
+# ==========================================
+#CONTROLE DOS EVENTOS
+# ==========================================
+
+# ==========================================
+#REDESENHO GERAL DAS FIGURAS
 # ==========================================
 
 def desenhar_figuras():
