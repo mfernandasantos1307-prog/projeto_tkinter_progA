@@ -160,6 +160,72 @@ def desenhar_retangulos():
 #LÓGICA DO OVAL
 # ==========================================
 
+ovais = []
+
+
+def iniciar_oval(event):
+    global ini_x, ini_y
+
+    ini_x = event.x
+    ini_y = event.y
+
+
+def atualizar_oval(event):
+    global fim_x, fim_y
+
+    fim_x = event.x
+    fim_y = event.y
+
+    # Redesenha as figuras já finalizadas
+    desenhar_figuras()
+
+    # Mostra o oval enquanto o mouse é arrastado
+    canvas.create_oval(
+        ini_x,
+        ini_y,
+        fim_x,
+        fim_y,
+        outline=cores.cor_borda_atual,
+        fill=cores.cor_preenchimento_atual
+    )
+
+
+def finalizar_oval(event):
+    fim_x = event.x
+    fim_y = event.y
+
+    ovais.append(
+        (
+            ini_x,
+            ini_y,
+            fim_x,
+            fim_y,
+            cores.cor_borda_atual,
+            cores.cor_preenchimento_atual
+        )
+    )
+
+
+def desenhar_ovais():
+    for oval in ovais:
+        (
+            x_inicial,
+            y_inicial,
+            x_final,
+            y_final,
+            cor_borda,
+            cor_preenchimento
+        ) = oval
+
+        canvas.create_oval(
+            x_inicial,
+            y_inicial,
+            x_final,
+            y_final,
+            outline=cor_borda,
+            fill=cor_preenchimento
+        )
+
 # ==========================================
 #CONTROLE DOS EVENTOS
 # ==========================================
@@ -172,6 +238,8 @@ def desenhar_figuras():
     canvas.delete("all")
 
     desenhar_circulos()
+    desenhar_retangulos()
+    desenhar_ovais()
 
     # ADICIONAR desenhar_retangulos()
     # ACIDICIONAR desenhar_ovais()
