@@ -1,7 +1,7 @@
 from tkinter import *
 
 import cores
-from figuras_POO import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
+from figuras import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
 
 # ==========================================
 # SELETOR DE FERRAMENTAS
