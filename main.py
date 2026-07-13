@@ -11,7 +11,7 @@ ferramenta_atual = "circulo"
 
 def selecionar_circulo():
     global ferramenta_atual
-    cancelar_poligono_em_andamento()
+    concluir_poligono_em_andamento()
     ferramenta_atual = "circulo"
 
     botao_circulo.config(relief=SUNKEN)
@@ -24,7 +24,7 @@ def selecionar_circulo():
 
 def selecionar_retangulo():
     global ferramenta_atual
-    cancelar_poligono_em_andamento()
+    concluir_poligono_em_andamento()
     ferramenta_atual = "retangulo"
 
     botao_circulo.config(relief=RAISED)
@@ -37,7 +37,7 @@ def selecionar_retangulo():
 
 def selecionar_oval():
     global ferramenta_atual
-    cancelar_poligono_em_andamento()
+    concluir_poligono_em_andamento()
     ferramenta_atual = "oval"
 
     botao_circulo.config(relief=RAISED)
@@ -50,7 +50,7 @@ def selecionar_oval():
 
 def selecionar_linha():
     global ferramenta_atual
-    cancelar_poligono_em_andamento()
+    concluir_poligono_em_andamento()
     ferramenta_atual = "linha"
 
     botao_circulo.config(relief=RAISED)
@@ -63,7 +63,7 @@ def selecionar_linha():
 
 def selecionar_rabisco():
     global ferramenta_atual
-    cancelar_poligono_em_andamento()
+    concluir_poligono_em_andamento()
     ferramenta_atual = "rabisco"
 
     botao_circulo.config(relief=RAISED)
@@ -312,29 +312,26 @@ def desenhar_poligono_em_andamento():
 
 
 def finalizar_poligono(event):
-    global pontos_poligono
-
     if ferramenta_atual != "poligono":
         return
 
-    if len(pontos_poligono) >= 3:
-        figuras.append(
-            Poligono(
-                list(pontos_poligono),
-                cores.cor_borda_atual,
-                cores.cor_preenchimento_atual
-            )
-        )
-
-    pontos_poligono = []
-    desenhar_figuras()
+    concluir_poligono_em_andamento()
     return "break"
 
 
-def cancelar_poligono_em_andamento():
+def concluir_poligono_em_andamento():
     global pontos_poligono
 
     if pontos_poligono:
+        if len(pontos_poligono) >= 3:
+            figuras.append(
+                Poligono(
+                    list(pontos_poligono),
+                    cores.cor_borda_atual,
+                    cores.cor_preenchimento_atual
+                )
+            )
+
         pontos_poligono = []
         desenhar_figuras()
 
