@@ -1,7 +1,7 @@
 from tkinter import *
 
 import cores
-from figuras_POO import Circulo, Linha, Oval, Rabisco, Retangulo
+from figuras_POO import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
 
 # ==========================================
 # SELETOR DE FERRAMENTAS
@@ -11,6 +11,7 @@ ferramenta_atual = "circulo"
 
 def selecionar_circulo():
     global ferramenta_atual
+    cancelar_poligono_em_andamento()
     ferramenta_atual = "circulo"
 
     botao_circulo.config(relief=SUNKEN)
@@ -18,10 +19,12 @@ def selecionar_circulo():
     botao_oval.config(relief=RAISED)
     botao_linha.config(relief=RAISED)
     botao_rabisco.config(relief=RAISED)
+    botao_poligono.config(relief=RAISED)
 
 
 def selecionar_retangulo():
     global ferramenta_atual
+    cancelar_poligono_em_andamento()
     ferramenta_atual = "retangulo"
 
     botao_circulo.config(relief=RAISED)
@@ -29,10 +32,12 @@ def selecionar_retangulo():
     botao_oval.config(relief=RAISED)
     botao_linha.config(relief=RAISED)
     botao_rabisco.config(relief=RAISED)
+    botao_poligono.config(relief=RAISED)
 
 
 def selecionar_oval():
     global ferramenta_atual
+    cancelar_poligono_em_andamento()
     ferramenta_atual = "oval"
 
     botao_circulo.config(relief=RAISED)
@@ -40,10 +45,12 @@ def selecionar_oval():
     botao_oval.config(relief=SUNKEN)
     botao_linha.config(relief=RAISED)
     botao_rabisco.config(relief=RAISED)
+    botao_poligono.config(relief=RAISED)
 
 
 def selecionar_linha():
     global ferramenta_atual
+    cancelar_poligono_em_andamento()
     ferramenta_atual = "linha"
 
     botao_circulo.config(relief=RAISED)
@@ -51,10 +58,12 @@ def selecionar_linha():
     botao_oval.config(relief=RAISED)
     botao_linha.config(relief=SUNKEN)
     botao_rabisco.config(relief=RAISED)
+    botao_poligono.config(relief=RAISED)
 
 
 def selecionar_rabisco():
     global ferramenta_atual
+    cancelar_poligono_em_andamento()
     ferramenta_atual = "rabisco"
 
     botao_circulo.config(relief=RAISED)
@@ -62,6 +71,19 @@ def selecionar_rabisco():
     botao_oval.config(relief=RAISED)
     botao_linha.config(relief=RAISED)
     botao_rabisco.config(relief=SUNKEN)
+    botao_poligono.config(relief=RAISED)
+
+
+def selecionar_poligono():
+    global ferramenta_atual
+    ferramenta_atual = "poligono"
+
+    botao_circulo.config(relief=RAISED)
+    botao_retangulo.config(relief=RAISED)
+    botao_oval.config(relief=RAISED)
+    botao_linha.config(relief=RAISED)
+    botao_rabisco.config(relief=RAISED)
+    botao_poligono.config(relief=SUNKEN)
 
 
 # ==========================================
@@ -261,6 +283,63 @@ def incompleta(figura):
 
 
 # ==========================================
+# LÓGICA DO POLÍGONO
+# ==========================================
+
+def adicionar_ponto_poligono(event):
+    pontos_poligono.append((event.x, event.y))
+    desenhar_figuras()
+    desenhar_poligono_em_andamento()
+
+
+def desenhar_poligono_em_andamento():
+    if len(pontos_poligono) >= 2:
+        canvas.create_polygon(
+            pontos_poligono,
+            outline=cores.cor_borda_atual,
+            fill=""
+        )
+
+    for x, y in pontos_poligono:
+        canvas.create_oval(
+            x - 3,
+            y - 3,
+            x + 3,
+            y + 3,
+            fill="red",
+            outline="red"
+        )
+
+
+def finalizar_poligono(event):
+    global pontos_poligono
+
+    if ferramenta_atual != "poligono":
+        return
+
+    if len(pontos_poligono) >= 3:
+        figuras.append(
+            Poligono(
+                list(pontos_poligono),
+                cores.cor_borda_atual,
+                cores.cor_preenchimento_atual
+            )
+        )
+
+    pontos_poligono = []
+    desenhar_figuras()
+    return "break"
+
+
+def cancelar_poligono_em_andamento():
+    global pontos_poligono
+
+    if pontos_poligono:
+        pontos_poligono = []
+        desenhar_figuras()
+
+
+# ==========================================
 # CONTROLE DOS EVENTOS
 # ==========================================
 
@@ -273,6 +352,8 @@ def iniciar_figura(event):
         iniciar_oval(event)
     elif ferramenta_atual in ["linha", "rabisco"]:
         iniciar_linha_rabisco(event)
+    elif ferramenta_atual == "poligono":
+        adicionar_ponto_poligono(event)
 
 
 def atualizar_figura(event):
@@ -314,6 +395,7 @@ def desenhar_figuras():
 
 figuras = []
 figura_nova = None
+pontos_poligono = []
 
 raio = None
 ini_x = None
@@ -372,6 +454,13 @@ botao_rabisco = Button(
     command=selecionar_rabisco
 )
 
+botao_poligono = Button(
+    frame_ferramentas,
+    text="⬠ Polígono",
+    width=10,
+    command=selecionar_poligono
+)
+
 botao_circulo.config(relief=SUNKEN)
 
 # Posicionamento dos botões (seguindo o layout grid do seu projeto)
@@ -380,6 +469,7 @@ botao_retangulo.grid(row=1, column=8, padx=5, pady=2)
 botao_oval.grid(row=2, column=8, padx=5, pady=2)
 botao_linha.grid(row=3, column=8, padx=5, pady=2)
 botao_rabisco.grid(row=4, column=8, padx=5, pady=2)
+botao_poligono.grid(row=5, column=8, padx=5, pady=2)
 
 # Área de desenho
 canvas = Canvas(
@@ -393,5 +483,6 @@ canvas.pack()
 canvas.bind("<ButtonPress-1>", iniciar_figura)
 canvas.bind("<B1-Motion>", atualizar_figura)
 canvas.bind("<ButtonRelease-1>", finalizar_figura)
+canvas.bind("<Double-Button-1>", finalizar_poligono)
 
 root.mainloop()
