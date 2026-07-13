@@ -3,7 +3,7 @@ from tkinter import *
 import cores
 
 # ==========================================
-#SELETOR DE FERRAMENTAS
+# SELETOR DE FERRAMENTAS
 # ==========================================
 
 ferramenta_atual = "circulo"
@@ -15,6 +15,8 @@ def selecionar_circulo():
     botao_circulo.config(relief=SUNKEN)
     botao_retangulo.config(relief=RAISED)
     botao_oval.config(relief=RAISED)
+    botao_linha.config(relief=RAISED)
+    botao_rabisco.config(relief=RAISED)
 
 
 def selecionar_retangulo():
@@ -24,6 +26,8 @@ def selecionar_retangulo():
     botao_circulo.config(relief=RAISED)
     botao_retangulo.config(relief=SUNKEN)
     botao_oval.config(relief=RAISED)
+    botao_linha.config(relief=RAISED)
+    botao_rabisco.config(relief=RAISED)
 
 
 def selecionar_oval():
@@ -33,37 +37,55 @@ def selecionar_oval():
     botao_circulo.config(relief=RAISED)
     botao_retangulo.config(relief=RAISED)
     botao_oval.config(relief=SUNKEN)
+    botao_linha.config(relief=RAISED)
+    botao_rabisco.config(relief=RAISED)
+
+
+def selecionar_linha():
+    global ferramenta_atual
+    ferramenta_atual = "linha"
+
+    botao_circulo.config(relief=RAISED)
+    botao_retangulo.config(relief=RAISED)
+    botao_oval.config(relief=RAISED)
+    botao_linha.config(relief=SUNKEN)
+    botao_rabisco.config(relief=RAISED)
+
+
+def selecionar_rabisco():
+    global ferramenta_atual
+    ferramenta_atual = "rabisco"
+
+    botao_circulo.config(relief=RAISED)
+    botao_retangulo.config(relief=RAISED)
+    botao_oval.config(relief=RAISED)
+    botao_linha.config(relief=RAISED)
+    botao_rabisco.config(relief=SUNKEN)
 
 
 # ==========================================
 # LÓGICA DO CÍRCULO
 # ==========================================
 
-# Quando o mouse é pressionado para iniciar um círculo
 def iniciar_circulo(event):
     global ini_x, ini_y
-
     ini_x = event.x
     ini_y = event.y
 
 
-# Quando o mouse é movido com o botão pressionado
 def atualizar_circulo(event):
     global fim_x, fim_y, raio
 
     fim_x = event.x
     fim_y = event.y
 
-    # Redesenha todas as figuras já finalizadas
     desenhar_figuras()
 
-    # Calcula a distância entre o centro e o mouse
     raio = (
         (ini_x - fim_x) ** 2
         + (ini_y - fim_y) ** 2
     ) ** 0.5
 
-    # Mostra o círculo atual enquanto o mouse é arrastado
     canvas.create_oval(
         ini_x - raio,
         ini_y - raio,
@@ -74,7 +96,6 @@ def atualizar_circulo(event):
     )
 
 
-# Quando o mouse é solto, salva o círculo
 def finalizar_circulo(event):
     fim_x = event.x
     fim_y = event.y
@@ -97,12 +118,11 @@ def finalizar_circulo(event):
 
 
 # ==========================================
-#LÓGICA DO RETÂNGULO
+# LÓGICA DO RETÂNGULO
 # ==========================================
 
 def iniciar_retangulo(event):
     global ini_x, ini_y
-
     ini_x = event.x
     ini_y = event.y
 
@@ -143,12 +163,11 @@ def finalizar_retangulo(event):
 
 
 # ==========================================
-#LÓGICA DO OVAL
+# LÓGICA DO OVAL
 # ==========================================
 
 def iniciar_oval(event):
     global ini_x, ini_y
-
     ini_x = event.x
     ini_y = event.y
 
@@ -159,10 +178,8 @@ def atualizar_oval(event):
     fim_x = event.x
     fim_y = event.y
 
-    # Redesenha as figuras já finalizadas
     desenhar_figuras()
 
-    # Mostra o oval enquanto o mouse é arrastado
     canvas.create_oval(
         ini_x,
         ini_y,
@@ -191,41 +208,90 @@ def finalizar_oval(event):
 
 
 # ==========================================
-#CONTROLE DOS EVENTOS
+# LÓGICA DA LINHA E RABISCO (NOVO)
 # ==========================================
+
+def iniciar_linha_rabisco(event):
+    global figura_nova
+    if ferramenta_atual == "linha":
+        figura_nova = ("linha", [event.x, event.y, event.x, event.y], cores.cor_borda_atual)
+    elif ferramenta_atual == "rabisco":
+        figura_nova = ("rabisco", [(event.x, event.y)], cores.cor_borda_atual)
+
+
+def atualizar_linha_rabisco(event):
+    global figura_nova
+    if figura_nova[0] == "rabisco":
+        figura_nova[1].append((event.x, event.y))
+    elif figura_nova[0] == "linha":
+        figura_nova[1][2] = event.x
+        figura_nova[1][3] = event.y
+
+    desenhar_figuras()
+    desenhar_figura_nova()
+
+
+def finalizar_linha_rabisco(event):
+    if not incompleta(figura_nova):
+        figuras.append(figura_nova)
+    desenhar_figuras()
+
+
+def desenhar_figura_nova():
+    tipo, values, cor = figura_nova
+    if tipo == "linha":
+        canvas.create_line(values[0], values[1], values[2], values[3], fill=cor, dash=(4, 2))
+    elif tipo == "rabisco":
+        canvas.create_line(values, fill=cor, dash=(4, 2))
+
+
+def incompleta(figura):
+    tipo, values, _ = figura
+    if tipo == "linha":
+        return (values[0], values[1]) == (values[2], values[3])
+    elif tipo == "rabisco":
+        return len(values) <= 1
+
+
+# ==========================================
+# CONTROLE DOS EVENTOS
+# ==========================================
+
 def iniciar_figura(event):
     if ferramenta_atual == "circulo":
         iniciar_circulo(event)
-
     elif ferramenta_atual == "retangulo":
         iniciar_retangulo(event)
-
     elif ferramenta_atual == "oval":
         iniciar_oval(event)
+    elif ferramenta_atual in ["linha", "rabisco"]:
+        iniciar_linha_rabisco(event)
 
 
 def atualizar_figura(event):
     if ferramenta_atual == "circulo":
         atualizar_circulo(event)
-
     elif ferramenta_atual == "retangulo":
         atualizar_retangulo(event)
-
     elif ferramenta_atual == "oval":
         atualizar_oval(event)
+    elif ferramenta_atual in ["linha", "rabisco"]:
+        atualizar_linha_rabisco(event)
 
 
 def finalizar_figura(event):
     if ferramenta_atual == "circulo":
         finalizar_circulo(event)
-
     elif ferramenta_atual == "retangulo":
         finalizar_retangulo(event)
-
     elif ferramenta_atual == "oval":
         finalizar_oval(event)
+    elif ferramenta_atual in ["linha", "rabisco"]:
+        finalizar_linha_rabisco(event)
+
+
 # ==========================================
-#REDESENHO GERAL DAS FIGURAS
+# REDESENHO GERAL DAS FIGURAS
 # ==========================================
 
 def desenhar_figuras():
@@ -266,12 +332,22 @@ def desenhar_figuras():
                 outline=cor_borda,
                 fill=cor_preenchimento
             )
+            
+        elif tipo == 'linha':
+            _, values, cor_borda = figura
+            canvas.create_line(values[0], values[1], values[2], values[3], fill=cor_borda)
+            
+        elif tipo == 'rabisco':
+            _, values, cor_borda = figura
+            canvas.create_line(values, fill=cor_borda)
+
 
 # ==========================================
 # PROGRAMA PRINCIPAL
 # ==========================================
 
 figuras = []
+figura_nova = None
 
 raio = None
 ini_x = None
@@ -294,7 +370,7 @@ frame_ferramentas.pack(
 # Cria a paleta usando o módulo de cores
 cores.criar_paleta(frame_ferramentas)
 
-#Botões para selecionar a figura
+# Botões para selecionar a figura
 botao_circulo = Button(
     frame_ferramentas,
     text="◯ Círculo",
@@ -316,12 +392,28 @@ botao_oval = Button(
     command=selecionar_oval
 )
 
+botao_linha = Button(
+    frame_ferramentas,
+    text="╱ Linha",
+    width=10,
+    command=selecionar_linha
+)
+
+botao_rabisco = Button(
+    frame_ferramentas,
+    text="✎ Rabisco",
+    width=10,
+    command=selecionar_rabisco
+)
+
 botao_circulo.config(relief=SUNKEN)
 
-# Posicionamento dos botões
+# Posicionamento dos botões (seguindo o layout grid do seu projeto)
 botao_circulo.grid(row=0, column=8, padx=5, pady=2)
 botao_retangulo.grid(row=1, column=8, padx=5, pady=2)
 botao_oval.grid(row=2, column=8, padx=5, pady=2)
+botao_linha.grid(row=3, column=8, padx=5, pady=2)
+botao_rabisco.grid(row=4, column=8, padx=5, pady=2)
 
 # Área de desenho
 canvas = Canvas(
