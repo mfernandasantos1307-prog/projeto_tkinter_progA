@@ -1,6 +1,7 @@
 from tkinter import *
 
 import cores
+from figuras_POO import Circulo, Linha, Oval, Rabisco, Retangulo
 
 # ==========================================
 # SELETOR DE FERRAMENTAS
@@ -106,13 +107,12 @@ def finalizar_circulo(event):
     ) ** 0.5
 
     figuras.append(
-        (
-            'circulo',
+        Circulo(
+            cores.cor_borda_atual,
+            cores.cor_preenchimento_atual,
             ini_x,
             ini_y,
-            raio_final,
-            cores.cor_borda_atual,
-            cores.cor_preenchimento_atual
+            raio_final
         )
     )
 
@@ -150,14 +150,13 @@ def finalizar_retangulo(event):
     fim_y = event.y
 
     figuras.append(
-        (
-            'retangulo',
+        Retangulo(
+            cores.cor_borda_atual,
+            cores.cor_preenchimento_atual,
             ini_x,
             ini_y,
             fim_x,
-            fim_y,
-            cores.cor_borda_atual,
-            cores.cor_preenchimento_atual
+            fim_y
         )
     )
 
@@ -195,14 +194,13 @@ def finalizar_oval(event):
     fim_y = event.y
 
     figuras.append(
-        (
-            'oval',
+        Oval(
+            cores.cor_borda_atual,
+            cores.cor_preenchimento_atual,
             ini_x,
             ini_y,
             fim_x,
-            fim_y,
-            cores.cor_borda_atual,
-            cores.cor_preenchimento_atual
+            fim_y
         )
     )
 
@@ -214,43 +212,52 @@ def finalizar_oval(event):
 def iniciar_linha_rabisco(event):
     global figura_nova
     if ferramenta_atual == "linha":
-        figura_nova = ("linha", [event.x, event.y, event.x, event.y], cores.cor_borda_atual)
+        figura_nova = Linha(
+            cores.cor_borda_atual,
+            None,
+            event.x,
+            event.y,
+            event.x,
+            event.y
+        )
     elif ferramenta_atual == "rabisco":
-        figura_nova = ("rabisco", [(event.x, event.y)], cores.cor_borda_atual)
+        figura_nova = Rabisco(
+            [(event.x, event.y)],
+            cores.cor_borda_atual
+        )
 
 
 def atualizar_linha_rabisco(event):
     global figura_nova
-    if figura_nova[0] == "rabisco":
-        figura_nova[1].append((event.x, event.y))
-    elif figura_nova[0] == "linha":
-        figura_nova[1][2] = event.x
-        figura_nova[1][3] = event.y
+    if isinstance(figura_nova, Rabisco):
+        figura_nova.pontos.append((event.x, event.y))
+    elif isinstance(figura_nova, Linha):
+        figura_nova.fim_x = event.x
+        figura_nova.fim_y = event.y
 
     desenhar_figuras()
     desenhar_figura_nova()
 
 
 def finalizar_linha_rabisco(event):
+    global figura_nova
     if not incompleta(figura_nova):
         figuras.append(figura_nova)
     desenhar_figuras()
+    figura_nova = None
 
 
 def desenhar_figura_nova():
-    tipo, values, cor = figura_nova
-    if tipo == "linha":
-        canvas.create_line(values[0], values[1], values[2], values[3], fill=cor, dash=(4, 2))
-    elif tipo == "rabisco":
-        canvas.create_line(values, fill=cor, dash=(4, 2))
+    figura_nova.desenhar(canvas)
 
 
 def incompleta(figura):
-    tipo, values, _ = figura
-    if tipo == "linha":
-        return (values[0], values[1]) == (values[2], values[3])
-    elif tipo == "rabisco":
-        return len(values) <= 1
+    if isinstance(figura, Linha):
+        return (figura.ini_x, figura.ini_y) == (figura.fim_x, figura.fim_y)
+    elif isinstance(figura, Rabisco):
+        return len(figura.pontos) <= 1
+
+    return True
 
 
 # ==========================================
@@ -298,48 +305,7 @@ def desenhar_figuras():
     canvas.delete("all")
 
     for figura in figuras:
-        tipo = figura[0]
-
-        if tipo == 'circulo':
-            _, x, y, raio_figura, cor_borda, cor_preenchimento = figura
-            canvas.create_oval(
-                x - raio_figura,
-                y - raio_figura, 
-                x + raio_figura,
-                y + raio_figura,
-                outline=cor_borda,
-                fill=cor_preenchimento
-            )
-        
-        elif tipo == 'retangulo':
-            _, x_inicial, y_inicial, x_final, y_final, cor_borda, cor_preenchimento = figura
-            canvas.create_rectangle(
-                x_inicial,
-                y_inicial,
-                x_final,
-                y_final,
-                outline=cor_borda,
-                fill=cor_preenchimento
-            )
-        
-        elif tipo == 'oval':
-            _, x_inicial, y_inicial, x_final, y_final, cor_borda, cor_preenchimento = figura
-            canvas.create_oval(
-                x_inicial, 
-                y_inicial,
-                x_final,
-                y_final,
-                outline=cor_borda,
-                fill=cor_preenchimento
-            )
-            
-        elif tipo == 'linha':
-            _, values, cor_borda = figura
-            canvas.create_line(values[0], values[1], values[2], values[3], fill=cor_borda)
-            
-        elif tipo == 'rabisco':
-            _, values, cor_borda = figura
-            canvas.create_line(values, fill=cor_borda)
+        figura.desenhar(canvas)
 
 
 # ==========================================
