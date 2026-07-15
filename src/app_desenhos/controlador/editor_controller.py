@@ -33,6 +33,8 @@ class EditorController:
             self.iniciar_retangulo(event)
         elif self.ferramenta_atual == "oval":
             self.iniciar_oval(event)
+        elif self.ferramenta_atual in ("linha", "rabisco"):
+            self.iniciar_linha_rabisco(event)
 
     def atualizar_figura(self, event):
         if self.ferramenta_atual == "circulo":
@@ -41,6 +43,8 @@ class EditorController:
             self.atualizar_retangulo(event)
         elif self.ferramenta_atual == "oval":
             self.atualizar_oval(event)
+        elif self.ferramenta_atual in ("linha", "rabisco"):
+            self.atualizar_linha_rabisco(event)
 
     def finalizar_figura(self, event):
         if self.ferramenta_atual == "circulo":
@@ -49,6 +53,8 @@ class EditorController:
             self.finalizar_retangulo(event)
         elif self.ferramenta_atual == "oval":
             self.finalizar_oval(event)
+        elif self.ferramenta_atual in ("linha", "rabisco"):
+            self.finalizar_linha_rabisco(event)
 
     def finalizar_poligono(self, event):
         pass
@@ -152,3 +158,49 @@ class EditorController:
             fim_x,
             fim_y
         )
+
+    # ==========================================
+    # LINHA E RABISCO
+    # ==========================================
+
+    def iniciar_linha_rabisco(self, event):
+        if self.ferramenta_atual == "linha":
+            self.figura_nova = Linha(
+                self.view.obter_cor_borda(),
+                None,
+                event.x,
+                event.y,
+                event.x,
+                event.y
+            )
+        elif self.ferramenta_atual == "rabisco":
+            self.figura_nova = Rabisco(
+                [(event.x, event.y)],
+                self.view.obter_cor_borda()
+            )
+
+    def atualizar_linha_rabisco(self, event):
+        if isinstance(self.figura_nova, Rabisco):
+            self.figura_nova.pontos.append((event.x, event.y))
+        elif isinstance(self.figura_nova, Linha):
+            self.figura_nova.fim_x = event.x
+            self.figura_nova.fim_y = event.y
+
+        self.view.redesenhar(self.desenho.obter_figuras())
+        if self.figura_nova is not None:
+            self.view.desenhar_previa(self.figura_nova)
+
+    def finalizar_linha_rabisco(self, _event):
+        if not self.figura_incompleta(self.figura_nova):
+            self.desenho.adicionar_figura(self.figura_nova)
+
+        self.figura_nova = None
+        self.view.redesenhar(self.desenho.obter_figuras())
+
+    @staticmethod
+    def figura_incompleta(figura):
+        if isinstance(figura, Linha):
+            return (figura.ini_x, figura.ini_y) == (figura.fim_x, figura.fim_y)
+        if isinstance(figura, Rabisco):
+            return len(figura.pontos) <= 1
+        return True
