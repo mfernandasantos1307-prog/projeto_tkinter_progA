@@ -23,6 +23,9 @@ class EditorController:
         self.fim_y = None
 
     def selecionar_ferramenta(self, ferramenta):
+        if self.ferramenta_atual == "poligono" and ferramenta != "poligono":
+            self.concluir_poligono_em_andamento()
+
         self.ferramenta_atual = ferramenta
         self.view.destacar_ferramenta(ferramenta)
 
@@ -35,6 +38,8 @@ class EditorController:
             self.iniciar_oval(event)
         elif self.ferramenta_atual in ("linha", "rabisco"):
             self.iniciar_linha_rabisco(event)
+        elif self.ferramenta_atual == "poligono":
+            self.adicionar_ponto_poligono(event)
 
     def atualizar_figura(self, event):
         if self.ferramenta_atual == "circulo":
@@ -56,8 +61,12 @@ class EditorController:
         elif self.ferramenta_atual in ("linha", "rabisco"):
             self.finalizar_linha_rabisco(event)
 
-    def finalizar_poligono(self, event):
-        pass
+    def finalizar_poligono(self, _event):
+        if self.ferramenta_atual != "poligono":
+            return None
+
+        self.concluir_poligono_em_andamento()
+        return "break"
 
     # ==========================================
     # CÍRCULO
@@ -204,3 +213,34 @@ class EditorController:
         if isinstance(figura, Rabisco):
             return len(figura.pontos) <= 1
         return True
+
+    # ==========================================
+    # POLÍGONO
+    # ==========================================
+
+    def adicionar_ponto_poligono(self, event):
+        self.pontos_poligono.append((event.x, event.y))
+        self.view.redesenhar(self.desenho.obter_figuras())
+
+        if len(self.pontos_poligono) >= 2:
+            previa = Poligono(
+                list(self.pontos_poligono),
+                self.view.obter_cor_borda(),
+                ""
+            )
+            self.view.desenhar_previa(previa)
+
+    def concluir_poligono_em_andamento(self):
+        if not self.pontos_poligono:
+            return
+
+        if len(self.pontos_poligono) >= 3:
+            poligono = Poligono(
+                list(self.pontos_poligono),
+                self.view.obter_cor_borda(),
+                self.view.obter_cor_preenchimento()
+            )
+            self.desenho.adicionar_figura(poligono)
+
+        self.pontos_poligono = []
+        self.view.redesenhar(self.desenho.obter_figuras())
