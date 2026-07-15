@@ -1,6 +1,7 @@
 import tkinter as tk
 
 import cores
+from model.desenho import Desenho
 from figuras import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
 
 
@@ -12,7 +13,7 @@ class EditorDesenho:
         self.root.title("Editor de figuras")
 
         self.ferramenta_atual = "circulo"
-        self.figuras = []
+        self.desenho = Desenho()
         self.figura_nova = None
         self.pontos_poligono = []
 
@@ -110,7 +111,7 @@ class EditorDesenho:
 
     def finalizar_circulo(self, event):
         raio = self.calcular_raio(event.x, event.y)
-        self.figuras.append(
+        self.desenho.adicionar_figura(
             Circulo(
                 self.paleta.cor_borda_atual,
                 self.paleta.cor_preenchimento_atual,
@@ -119,6 +120,7 @@ class EditorDesenho:
                 raio
             )
         )
+        self.desenhar_figuras()
         
     def calcular_raio(self, fim_x, fim_y):
         return (
@@ -149,7 +151,7 @@ class EditorDesenho:
         )
 
     def finalizar_retangulo(self, event):
-        self.figuras.append(
+        self.desenho.adicionar_figura(
             Retangulo(
                 self.paleta.cor_borda_atual,
                 self.paleta.cor_preenchimento_atual,
@@ -159,6 +161,7 @@ class EditorDesenho:
                 event.y
             )
         )
+        self.desenhar_figuras()
 
     # ==========================================
     # OVAL
@@ -183,7 +186,7 @@ class EditorDesenho:
         )
 
     def finalizar_oval(self, event):
-        self.figuras.append(
+        self.desenho.adicionar_figura(
             Oval(
                 self.paleta.cor_borda_atual,
                 self.paleta.cor_preenchimento_atual,
@@ -193,6 +196,7 @@ class EditorDesenho:
                 event.y
             )
         )
+        self.desenhar_figuras()
     
     # ==========================================
     # LINHA E RABISCO
@@ -227,7 +231,7 @@ class EditorDesenho:
 
     def finalizar_linha_rabisco(self, _event):
         if not self.figura_incompleta(self.figura_nova):
-            self.figuras.append(self.figura_nova)
+            self.desenho.adicionar_figura(self.figura_nova)
 
         self.desenhar_figuras()
         self.figura_nova = None
@@ -247,6 +251,10 @@ class EditorDesenho:
     def adicionar_ponto_poligono(self, event):
         self.pontos_poligono.append((event.x, event.y))
         self.desenhar_figuras()
+        self.desenhar_poligono_em_andamento()
+
+    def desenho_poligono_em_andamento(self):
+        # Correção do nome do método para manter compatibilidade interna
         self.desenhar_poligono_em_andamento()
 
     def desenhar_poligono_em_andamento(self):
@@ -279,7 +287,7 @@ class EditorDesenho:
             return
 
         if len(self.pontos_poligono) >= 3:
-           self.figuras.append(
+            self.desenho.adicionar_figura(
                 Poligono(
                     list(self.pontos_poligono),
                     self.paleta.cor_borda_atual,
@@ -328,8 +336,7 @@ class EditorDesenho:
 
     def desenhar_figuras(self):
         self.canvas.delete("all")
-        for figura in self.figuras:
-            figura.desenhar(self.canvas)
+        self.desenho.desenhar_todos(self.canvas)
 
 
 def main():
