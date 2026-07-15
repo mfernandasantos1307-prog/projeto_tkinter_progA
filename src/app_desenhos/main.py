@@ -1,8 +1,8 @@
 import tkinter as tk
 
-import cores
-from model.desenho import Desenho
-from figuras import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
+import src.app_desenhos.cores as cores
+from src.app_desenhos.model.desenho import Desenho
+from src.app_desenhos.model.figuras import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
 
 
 class EditorDesenho:
