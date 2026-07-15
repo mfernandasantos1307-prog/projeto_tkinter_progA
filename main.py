@@ -37,7 +37,7 @@ class EditorDesenho:
             pady=5
         )
 
-        cores.criar_paleta(frame_ferramentas)
+        self.paleta = cores.PaletaCores(frame_ferramentas)
 
         ferramentas = (
             ("circulo", "◯ Círculo"),
@@ -104,22 +104,22 @@ class EditorDesenho:
             self.ini_y - raio,
             self.ini_x + raio,
             self.ini_y + raio,
-            outline=cores.cor_borda_atual,
-            fill=cores.cor_preenchimento_atual
+            outline=self.paleta.cor_borda_atual,
+            fill=self.paleta.cor_preenchimento_atual
         )
 
     def finalizar_circulo(self, event):
         raio = self.calcular_raio(event.x, event.y)
         self.figuras.append(
             Circulo(
-                cores.cor_borda_atual,
-                cores.cor_preenchimento_atual,
+                self.paleta.cor_borda_atual,
+                self.paleta.cor_preenchimento_atual,
                 self.ini_x,
                 self.ini_y,
                 raio
             )
         )
-
+        
     def calcular_raio(self, fim_x, fim_y):
         return (
             (self.ini_x - fim_x) ** 2
@@ -144,15 +144,15 @@ class EditorDesenho:
             self.ini_y,
             self.fim_x,
             self.fim_y,
-            outline=cores.cor_borda_atual,
-            fill=cores.cor_preenchimento_atual
+            outline=self.paleta.cor_borda_atual,
+            fill=self.paleta.cor_preenchimento_atual
         )
 
     def finalizar_retangulo(self, event):
         self.figuras.append(
             Retangulo(
-                cores.cor_borda_atual,
-                cores.cor_preenchimento_atual,
+                self.paleta.cor_borda_atual,
+                self.paleta.cor_preenchimento_atual,
                 self.ini_x,
                 self.ini_y,
                 event.x,
@@ -178,22 +178,22 @@ class EditorDesenho:
             self.ini_y,
             self.fim_x,
             self.fim_y,
-            outline=cores.cor_borda_atual,
-            fill=cores.cor_preenchimento_atual
+            outline=self.paleta.cor_borda_atual,
+            fill=self.paleta.cor_preenchimento_atual
         )
 
     def finalizar_oval(self, event):
         self.figuras.append(
             Oval(
-                cores.cor_borda_atual,
-                cores.cor_preenchimento_atual,
+                self.paleta.cor_borda_atual,
+                self.paleta.cor_preenchimento_atual,
                 self.ini_x,
                 self.ini_y,
                 event.x,
                 event.y
             )
         )
-
+    
     # ==========================================
     # LINHA E RABISCO
     # ==========================================
@@ -201,7 +201,7 @@ class EditorDesenho:
     def iniciar_linha_rabisco(self, event):
         if self.ferramenta_atual == "linha":
             self.figura_nova = Linha(
-                cores.cor_borda_atual,
+                self.paleta.cor_borda_atual,
                 None,
                 event.x,
                 event.y,
@@ -211,9 +211,9 @@ class EditorDesenho:
         elif self.ferramenta_atual == "rabisco":
             self.figura_nova = Rabisco(
                 [(event.x, event.y)],
-                cores.cor_borda_atual
+                self.paleta.cor_borda_atual
             )
-
+    
     def atualizar_linha_rabisco(self, event):
         if isinstance(self.figura_nova, Rabisco):
             self.figura_nova.pontos.append((event.x, event.y))
@@ -253,7 +253,7 @@ class EditorDesenho:
         if len(self.pontos_poligono) >= 2:
             self.canvas.create_polygon(
                 self.pontos_poligono,
-                outline=cores.cor_borda_atual,
+                outline=self.paleta.cor_borda_atual,
                 fill=""
             )
 
@@ -279,11 +279,11 @@ class EditorDesenho:
             return
 
         if len(self.pontos_poligono) >= 3:
-            self.figuras.append(
+           self.figuras.append(
                 Poligono(
                     list(self.pontos_poligono),
-                    cores.cor_borda_atual,
-                    cores.cor_preenchimento_atual
+                    self.paleta.cor_borda_atual,
+                    self.paleta.cor_preenchimento_atual
                 )
             )
 
