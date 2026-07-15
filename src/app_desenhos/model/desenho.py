@@ -1,4 +1,4 @@
-from model.figuras import Figura
+from .figuras import Figura
 
 class Desenho:
     

@@ -1,6 +1,6 @@
 import tkinter as tk
 
-import src.app_desenhos.cores as cores
+import src.app_desenhos.visao.paleta as cores
 from src.app_desenhos.model.desenho import Desenho
 from src.app_desenhos.model.figuras import Circulo, Linha, Oval, Poligono, Rabisco, Retangulo
 
