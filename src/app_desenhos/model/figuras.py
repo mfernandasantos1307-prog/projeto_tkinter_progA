@@ -1,4 +1,4 @@
-class Figuras:
+class Figura:
     
     def __init__(self, cor_borda, cor_preenchimento):
         self.cor_borda = cor_borda
@@ -7,7 +7,7 @@ class Figuras:
     def desenhar(self, canvas):
         pass
 
-class Circulo(Figuras):
+class Circulo(Figura):
     
     def __init__(self, cor_borda, cor_preenchimento, x, y, raio):
 
@@ -28,7 +28,7 @@ class Circulo(Figuras):
             fill=self.cor_preenchimento
         )
 
-class Retangulo(Figuras):
+class Retangulo(Figura):
     
     def __init__(self, cor_borda, cor_preenchimento, ini_x, ini_y, fim_x, fim_y):
 
@@ -48,7 +48,7 @@ class Retangulo(Figuras):
         )
 
 
-class Oval(Figuras):
+class Oval(Figura):
     
     def __init__(self, cor_borda, cor_preenchimento, ini_x, ini_y, fim_x, fim_y):
 
@@ -67,7 +67,7 @@ class Oval(Figuras):
             fill=self.cor_preenchimento
         )
 
-class Linha(Figuras):
+class Linha(Figura):
 
     def __init__ (self, cor_borda, cor_preenchimento, ini_x, ini_y, fim_x, fim_y):
 
@@ -87,7 +87,7 @@ class Linha(Figuras):
             fill=self.cor_borda,
         )
 
-class Rabisco(Figuras):
+class Rabisco(Figura):
 
     def __init__ (self, pontos, cor_borda):
 
@@ -99,4 +99,18 @@ class Rabisco(Figuras):
         canvas.create_line(
             self.pontos,
             fill=self.cor_borda,
+        )
+
+
+class Poligono(Figura):
+
+    def __init__(self, pontos, cor_borda, cor_preenchimento):
+        super().__init__(cor_borda, cor_preenchimento)
+        self.pontos = pontos
+
+    def desenhar(self, canvas):
+        canvas.create_polygon(
+            self.pontos,
+            outline=self.cor_borda,
+            fill=self.cor_preenchimento
         )
