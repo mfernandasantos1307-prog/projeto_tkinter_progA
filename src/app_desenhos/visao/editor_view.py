@@ -31,10 +31,10 @@ class EditorView:
         # Instancição da paleta de cores
         self.frame_paleta = Frame(self.barra_ferramentas)
         self.frame_paleta.pack(pady=5)
-        self.paleta = PaletaCores(self.frame)
+        self.paleta = PaletaCores(self.frame_paleta)
 
     def criar_botoes_ferramentas(self):
-        ferramentas = ['Rabiscos', 'Linha', 'Retanglo', 'Circulo', 'Oval','Poligono']
+        ferramentas = ['Rabiscos', 'Linha', 'Retangulo', 'Circulo', 'Oval','Poligono']
 
         for nome in ferramentas:
 
@@ -53,6 +53,13 @@ class EditorView:
         if self.controlador:
             self.controlador.selecionar_ferramenta(nome_feramenta)
 
+    def destacar_ferramenta(self, ferramenta):
+        for nome, botao in self.botoes.items():
+            if nome == ferramenta:
+                botao.config(relief=SUNKEN)
+            else:
+                botao.config(relief=RAISED)
+
     def conectar_controlador(self, controlador):
         self.controlador = controlador
 
@@ -66,7 +73,7 @@ class EditorView:
         self.canvas.bind('<ButtonRelease-1>', self.controlador.finalizar_figura)
 
         # duplo clique para finalizar o polígono 
-        self.canvas.bind('<Double-Button-1', self.controlador.finalizar_poligono)
+        self.canvas.bind('<Double-Button-1>', self.controlador.finalizar_poligono)
 
     def obter_cor_borda(self):
         return self.paleta.cor_borda_atual
@@ -82,30 +89,3 @@ class EditorView:
 
     def iniciar(self):
         self.janela.mainloop()
-
-
-# ===== codigo temporário apenas para testar o funcionamento (apagar após testar) 
-if __name__ == "__main__":
-    # Criamos a sua tela
-    app = EditorView()
-    
-    # Criamos um "Controlador de Mentirinha" só para o Tkinter não dar erro de falta de funções
-    class ControladorMentirinha:
-        def selecionar_ferramenta(self, ferramenta):
-            print(f"Botão clicado! Ferramenta selecionada: {ferramenta}")
-            app.destacar_ferramenta(ferramenta)
-            
-        def iniciar_figura(self, event): pass
-        def atualizar_figura(self, event): pass
-        def finalizar_figura(self, event): pass
-        def finalizar_poligono(self, event): pass
-
-    # Conectamos o controlador de mentirinha na sua View
-    app.conectar_controlador(ControladorMentirinha())
-    
-    # Iniciamos a janela
-    app.iniciar()  
-
-
-
-
