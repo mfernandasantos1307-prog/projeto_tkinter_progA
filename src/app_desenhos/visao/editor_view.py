@@ -83,10 +83,10 @@ class EditorView:
         self.canvas.bind('<Double-Button-1>', self.controlador.finalizar_poligono)
 
     def obter_cor_borda(self):
-        return self.paleta.cor_borda_atual
+        return self.paleta.obter_cor_borda()
 
     def obter_cor_preenchimento(self):
-        return self.paleta.cor_preenchimento_atual  
+        return self.paleta.obter_cor_preenchimento()
 
     def redesenhar(self, figuras):
         self.canvas.delete('all')

@@ -16,7 +16,7 @@ class Desenho:
         self._figuras.clear()
 
     def obter_figuras(self):
-        return self._figuras
+        return tuple(self._figuras)
 
     def desenhar_todos(self, canvas):
         for figura in self._figuras:

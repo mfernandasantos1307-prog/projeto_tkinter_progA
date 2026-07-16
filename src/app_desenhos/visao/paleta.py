@@ -6,36 +6,42 @@ class PaletaCores:
     def __init__(self, frame):
         self.frame = frame
         
-        self.cor_borda_atual = "black"
-        self.cor_preenchimento_atual = ""
-        self.modo_cor = "preenchimento"
+        self._cor_borda_atual = "black"
+        self._cor_preenchimento_atual = ""
+        self._modo_cor = "preenchimento"
         
         self.criar_paleta()
 
     # --- LÓGICA DAS CORES ---
     def selecionar_cor(self, cor_escolhida):
-        if self.modo_cor == "preenchimento":
-            self.cor_preenchimento_atual = cor_escolhida
+        if self._modo_cor == "preenchimento":
+            self._cor_preenchimento_atual = cor_escolhida
         else:
-            self.cor_borda_atual = cor_escolhida
+            self._cor_borda_atual = cor_escolhida
+
+    def obter_cor_borda(self):
+        return self._cor_borda_atual
+
+    def obter_cor_preenchimento(self):
+        return self._cor_preenchimento_atual
 
     def ativar_modo_borda(self):
-        self.modo_cor = "borda"
+        self._modo_cor = "borda"
         self.selecionar_borda.config(relief=SUNKEN)
         self.selecionar_preenchimento.config(relief=RAISED)
 
     def ativar_modo_preenchimento(self):
-        self.modo_cor = "preenchimento"
+        self._modo_cor = "preenchimento"
         self.selecionar_borda.config(relief=RAISED)
         self.selecionar_preenchimento.config(relief=SUNKEN)
 
     def escolher_cor_extra(self):
         cor = colorchooser.askcolor(title="Outras cores")
         if cor[1]:
-            if self.modo_cor == "preenchimento":
-                self.cor_preenchimento_atual = cor[1]
+            if self._modo_cor == "preenchimento":
+                self._cor_preenchimento_atual = cor[1]
             else:
-                self.cor_borda_atual = cor[1]
+                self._cor_borda_atual = cor[1]
 
     # --- INTERFACE DA PALETA ---
     def criar_paleta(self):
