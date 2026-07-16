@@ -14,17 +14,26 @@ Aplicativo desenvolvido em Python com Tkinter para a disciplina Programação A 
 - Criação de linhas e desenhos à mão livre
 - Seleção de cores de borda e preenchimento
 - Estrutura orientada a objetos com uma hierarquia de figuras
+- Classe abstrata `Figura`, com implementações específicas para cada figura
+- Organização da aplicação segundo o padrão MVC (Model-View-Controller)
 
 ## Execução
 
-Na pasta do projeto, execute:
+Na pasta principal do projeto, execute:
 
 ```bash
-python main.py
+python -m src.app_desenhos.main
 ```
 
-## Arquivos principais
+No Windows, caso o comando usado para iniciar o Python seja `py`, execute:
 
-- `main.py`: interface e controle do editor
-- `figuras.py`: classes das figuras
-- `cores.py`: seleção de cores
+```powershell
+py -m src.app_desenhos.main
+```
+
+## Estrutura principal
+
+- `src/app_desenhos/main.py`: cria e conecta os componentes da aplicação
+- `src/app_desenhos/model/`: classes do modelo, como `Desenho` e a hierarquia de figuras
+- `src/app_desenhos/visao/`: interface gráfica e paleta de cores
+- `src/app_desenhos/controlador/`: controlador das ferramentas e eventos de desenho
