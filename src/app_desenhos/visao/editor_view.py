@@ -34,13 +34,20 @@ class EditorView:
         self.paleta = PaletaCores(self.frame_paleta)
 
     def criar_botoes_ferramentas(self):
-        ferramentas = ['Rabiscos', 'Linha', 'Retangulo', 'Circulo', 'Oval','Poligono']
+        ferramentas = (
+            ('rabisco', 'Rabisco'),
+            ('linha', 'Linha'),
+            ('retangulo', 'Retângulo'),
+            ('circulo', 'Círculo'),
+            ('oval', 'Oval'),
+            ('poligono', 'Polígono'),
+        )
 
-        for nome in ferramentas:
+        for nome, texto in ferramentas:
 
             btn = Button(
                 self.barra_ferramentas,
-                text=nome,
+                text=texto,
                 width=12,
                 relief=RAISED,
                 command=lambda n=nome: self.ao_clicar_ferramenta(n)
@@ -49,9 +56,9 @@ class EditorView:
 
             self.botoes[nome] = btn
 
-    def ao_clicar_ferramenta(self, nome_feramenta):
+    def ao_clicar_ferramenta(self, nome_ferramenta):
         if self.controlador:
-            self.controlador.selecionar_ferramenta(nome_feramenta)
+            self.controlador.selecionar_ferramenta(nome_ferramenta)
 
     def destacar_ferramenta(self, ferramenta):
         for nome, botao in self.botoes.items():
@@ -86,6 +93,9 @@ class EditorView:
 
         for fig in figuras:
             fig.desenhar(self.canvas)
+
+    def desenhar_previa(self, figura):
+        figura.desenhar(self.canvas)
 
     def iniciar(self):
         self.janela.mainloop()
