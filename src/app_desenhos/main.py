@@ -1,6 +1,6 @@
-from .controlador.editor_controller import EditorController
-from .model.desenho import Desenho
-from .visao.editor_view import EditorView
+from src.app_desenhos.controlador.editor_controller import EditorController
+from src.app_desenhos.model.desenho import Desenho
+from src.app_desenhos.visao.editor_view import EditorView
 
 
 def main():
