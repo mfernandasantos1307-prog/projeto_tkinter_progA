@@ -1,5 +1,6 @@
-from src.app_desenhos.controlador.estados.estado_ferramenta import EstadoFerramenta
-from src.app_desenhos.model.rabisco import Rabisco
+from app_desenhos.controlador.estados.estado_ferramenta import EstadoFerramenta
+from app_desenhos.model.rabisco import Rabisco
+
 
 class EstadoRabisco(EstadoFerramenta):
 
@@ -10,19 +11,31 @@ class EstadoRabisco(EstadoFerramenta):
         self.pontos = [(event.x, event.y)]
 
     def ao_arrastar(self, controller, event):
-        self.pontos.append((event.x, event.y))
+        if not self.pontos:
+            return
 
-    def ao_soltar(self, controller, event):
         self.pontos.append((event.x, event.y))
-
-        novo_rabisco = Rabisco(
-            controller.cor_borda,
-            controller.cor_preenchimento,
-            self.pontos
+        controller.atualizar_view()
+        controller.view.desenhar_previa(
+            Rabisco(list(self.pontos), controller.cor_borda)
         )
 
-        controller.desenho.adicionar_figura(novo_rabisco)
+    def ao_soltar(self, controller, event):
+        if not self.pontos:
+            return
+
+        ponto_final = (event.x, event.y)
+        if self.pontos[-1] != ponto_final:
+            self.pontos.append(ponto_final)
+
+        if len(self.pontos) > 1:
+            controller.desenho.adicionar_figura(
+                Rabisco(list(self.pontos), controller.cor_borda)
+            )
+
+        self.pontos = []
         controller.atualizar_view()
 
-    def ao_duplo_clique(self, controller, event):
-        pass
+    def ao_sair(self, controller):
+        self.pontos = []
+        controller.atualizar_view()

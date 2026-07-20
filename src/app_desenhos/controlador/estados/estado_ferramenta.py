@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class EstadoFerramenta(ABC):
 
     @abstractmethod
@@ -14,6 +15,11 @@ class EstadoFerramenta(ABC):
     def ao_soltar(self, controller, event):
         pass
 
-    @abstractmethod
     def ao_duplo_clique(self, controller, event):
+        return None
+
+    def ao_sair(self, controller):
         pass
+
+    def cancelar(self, controller):
+        self.ao_sair(controller)

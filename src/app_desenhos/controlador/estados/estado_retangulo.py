@@ -1,24 +1,39 @@
-from src.app_desenhos.controlador.estados.estado_ferramenta import EstadoFerramenta
-from src.app_desenhos.model.retangulo import Retangulo
+from app_desenhos.controlador.estados.estado_ferramenta import EstadoFerramenta
+from app_desenhos.model.retangulo import Retangulo
+
 
 class EstadoRetangulo(EstadoFerramenta):
 
     def __init__(self):
-        self.ini_x = 0
-        self.ini_y = 0
+        self.ini_x = None
+        self.ini_y = None
 
     def ao_pressionar(self, controller, event):
         self.ini_x = event.x
         self.ini_y = event.y
 
     def ao_arrastar(self, controller, event):
-        pass
+        if self.ini_x is None:
+            return
+
+        retangulo = self._criar_retangulo(controller, event.x, event.y)
+        controller.atualizar_view()
+        controller.view.desenhar_previa(retangulo)
 
     def ao_soltar(self, controller, event):
-        fim_x = event.x
-        fim_y = event.y
+        if self.ini_x is None:
+            return
 
-        novo_retangulo = Retangulo(
+        if (self.ini_x, self.ini_y) != (event.x, event.y):
+            controller.desenho.adicionar_figura(
+                self._criar_retangulo(controller, event.x, event.y)
+            )
+
+        self._limpar()
+        controller.atualizar_view()
+
+    def _criar_retangulo(self, controller, fim_x, fim_y):
+        return Retangulo(
             controller.cor_borda,
             controller.cor_preenchimento,
             self.ini_x,
@@ -27,8 +42,10 @@ class EstadoRetangulo(EstadoFerramenta):
             fim_y
         )
 
-        controller.desenho.adicionar_figura(novo_retangulo)
+    def ao_sair(self, controller):
+        self._limpar()
         controller.atualizar_view()
 
-    def ao_duplo_clique(self, controller, event):
-        pass
+    def _limpar(self):
+        self.ini_x = None
+        self.ini_y = None

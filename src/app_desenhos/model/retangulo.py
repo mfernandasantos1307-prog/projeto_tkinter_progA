@@ -1,4 +1,4 @@
-from src.app_desenhos.model.figura import Figura
+from app_desenhos.model.figura import Figura
 
 class Retangulo(Figura):
     

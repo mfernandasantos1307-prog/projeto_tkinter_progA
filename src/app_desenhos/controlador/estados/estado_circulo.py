@@ -1,27 +1,40 @@
 import math
-from src.app_desenhos.controlador.estados.estado_ferramenta import EstadoFerramenta
-from src.app_desenhos.model.circulo import Circulo
+from app_desenhos.controlador.estados.estado_ferramenta import EstadoFerramenta
+from app_desenhos.model.circulo import Circulo
+
 
 class EstadoCirculo(EstadoFerramenta):
 
     def __init__(self):
-        self.centro_x = 0
-        self.centro_y = 0
+        self.centro_x = None
+        self.centro_y = None
 
     def ao_pressionar(self, controller, event):
         self.centro_x = event.x
         self.centro_y = event.y
 
     def ao_arrastar(self, controller, event):
-        pass
+        if self.centro_x is None:
+            return
+
+        circulo = self._criar_circulo(controller, event.x, event.y)
+        controller.atualizar_view()
+        controller.view.desenhar_previa(circulo)
 
     def ao_soltar(self, controller, event):
-        fim_x = event.x
-        fim_y = event.y
+        if self.centro_x is None:
+            return
 
+        novo_circulo = self._criar_circulo(controller, event.x, event.y)
+        if novo_circulo.raio > 0:
+            controller.desenho.adicionar_figura(novo_circulo)
+
+        self._limpar()
+        controller.atualizar_view()
+
+    def _criar_circulo(self, controller, fim_x, fim_y):
         raio = math.hypot(fim_x - self.centro_x, fim_y - self.centro_y)
-
-        novo_circulo = Circulo(
+        return Circulo(
             controller.cor_borda,
             controller.cor_preenchimento,
             self.centro_x,
@@ -29,8 +42,10 @@ class EstadoCirculo(EstadoFerramenta):
             raio
         )
 
-        controller.desenho.adicionar_figura(novo_circulo)
+    def ao_sair(self, controller):
+        self._limpar()
         controller.atualizar_view()
 
-    def ao_duplo_clique(self, controller, event):
-        pass
+    def _limpar(self):
+        self.centro_x = None
+        self.centro_y = None

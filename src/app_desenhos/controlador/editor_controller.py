@@ -1,246 +1,98 @@
-from ..model.figuras import (
-    Circulo,
-    Linha,
-    Oval,
-    Poligono,
-    Rabisco,
-    Retangulo,
-)
+from app_desenhos.controlador.estados.estado_circulo import EstadoCirculo
+from app_desenhos.controlador.estados.estado_linha import EstadoLinha
+from app_desenhos.controlador.estados.estado_oval import EstadoOval
+from app_desenhos.controlador.estados.estado_poligono import EstadoPoligono
+from app_desenhos.controlador.estados.estado_rabisco import EstadoRabisco
+from app_desenhos.controlador.estados.estado_retangulo import EstadoRetangulo
 
 
 class EditorController:
+
     def __init__(self, desenho, view):
         self.desenho = desenho
         self.view = view
+        self.caminho_arquivo = None
 
-        self.ferramenta_atual = "circulo"
-        self.figura_nova = None
-        self.pontos_poligono = []
+        self.estados = {
+            "circulo": EstadoCirculo(),
+            "retangulo": EstadoRetangulo(),
+            "oval": EstadoOval(),
+            "linha": EstadoLinha(),
+            "rabisco": EstadoRabisco(),
+            "poligono": EstadoPoligono(),
+        }
+        self.nome_ferramenta_atual = "circulo"
+        self.estado_atual = self.estados[self.nome_ferramenta_atual]
 
-        self.ini_x = None
-        self.ini_y = None
-        self.fim_x = None
-        self.fim_y = None
+    @property
+    def cor_borda(self):
+        return self.view.obter_cor_borda()
+
+    @property
+    def cor_preenchimento(self):
+        return self.view.obter_cor_preenchimento()
 
     def selecionar_ferramenta(self, ferramenta):
-        if self.ferramenta_atual == "poligono" and ferramenta != "poligono":
-            self.concluir_poligono_em_andamento()
+        novo_estado = self.estados[ferramenta]
 
-        self.ferramenta_atual = ferramenta
+        if novo_estado is not self.estado_atual:
+            self.estado_atual.ao_sair(self)
+            self.estado_atual = novo_estado
+            self.nome_ferramenta_atual = ferramenta
+
         self.view.destacar_ferramenta(ferramenta)
 
     def iniciar_figura(self, event):
-        if self.ferramenta_atual == "circulo":
-            self.iniciar_circulo(event)
-        elif self.ferramenta_atual == "retangulo":
-            self.iniciar_retangulo(event)
-        elif self.ferramenta_atual == "oval":
-            self.iniciar_oval(event)
-        elif self.ferramenta_atual in ("linha", "rabisco"):
-            self.iniciar_linha_rabisco(event)
-        elif self.ferramenta_atual == "poligono":
-            self.adicionar_ponto_poligono(event)
+        self.estado_atual.ao_pressionar(self, event)
 
     def atualizar_figura(self, event):
-        if self.ferramenta_atual == "circulo":
-            self.atualizar_circulo(event)
-        elif self.ferramenta_atual == "retangulo":
-            self.atualizar_retangulo(event)
-        elif self.ferramenta_atual == "oval":
-            self.atualizar_oval(event)
-        elif self.ferramenta_atual in ("linha", "rabisco"):
-            self.atualizar_linha_rabisco(event)
+        self.estado_atual.ao_arrastar(self, event)
 
     def finalizar_figura(self, event):
-        if self.ferramenta_atual == "circulo":
-            self.finalizar_circulo(event)
-        elif self.ferramenta_atual == "retangulo":
-            self.finalizar_retangulo(event)
-        elif self.ferramenta_atual == "oval":
-            self.finalizar_oval(event)
-        elif self.ferramenta_atual in ("linha", "rabisco"):
-            self.finalizar_linha_rabisco(event)
+        self.estado_atual.ao_soltar(self, event)
 
-    def finalizar_poligono(self, _event):
-        if self.ferramenta_atual != "poligono":
-            return None
+    def finalizar_poligono(self, event):
+        return self.estado_atual.ao_duplo_clique(self, event)
 
-        self.concluir_poligono_em_andamento()
-        return "break"
-
-    # ==========================================
-    # CÍRCULO
-    # ==========================================
-
-    def iniciar_circulo(self, event):
-        self.ini_x = event.x
-        self.ini_y = event.y
-
-    def atualizar_circulo(self, event):
-        self.fim_x = event.x
-        self.fim_y = event.y
-
-        circulo = self.criar_circulo(self.fim_x, self.fim_y)
-        self.view.redesenhar(self.desenho.obter_figuras())
-        self.view.desenhar_previa(circulo)
-
-    def finalizar_circulo(self, event):
-        circulo = self.criar_circulo(event.x, event.y)
-        self.desenho.adicionar_figura(circulo)
+    def atualizar_view(self):
         self.view.redesenhar(self.desenho.obter_figuras())
 
-    def criar_circulo(self, fim_x, fim_y):
-        raio = self.calcular_raio(fim_x, fim_y)
-
-        return Circulo(
-            self.view.obter_cor_borda(),
-            self.view.obter_cor_preenchimento(),
-            self.ini_x,
-            self.ini_y,
-            raio
-        )
-
-    def calcular_raio(self, fim_x, fim_y):
-        return (
-            (self.ini_x - fim_x) ** 2
-            + (self.ini_y - fim_y) ** 2
-        ) ** 0.5
-
-    # ==========================================
-    # RETÂNGULO
-    # ==========================================
-
-    def iniciar_retangulo(self, event):
-        self.ini_x = event.x
-        self.ini_y = event.y
-
-    def atualizar_retangulo(self, event):
-        self.fim_x = event.x
-        self.fim_y = event.y
-
-        retangulo = self.criar_retangulo(self.fim_x, self.fim_y)
-        self.view.redesenhar(self.desenho.obter_figuras())
-        self.view.desenhar_previa(retangulo)
-
-    def finalizar_retangulo(self, event):
-        retangulo = self.criar_retangulo(event.x, event.y)
-        self.desenho.adicionar_figura(retangulo)
-        self.view.redesenhar(self.desenho.obter_figuras())
-
-    def criar_retangulo(self, fim_x, fim_y):
-        return Retangulo(
-            self.view.obter_cor_borda(),
-            self.view.obter_cor_preenchimento(),
-            self.ini_x,
-            self.ini_y,
-            fim_x,
-            fim_y
-        )
-
-    # ==========================================
-    # OVAL
-    # ==========================================
-
-    def iniciar_oval(self, event):
-        self.ini_x = event.x
-        self.ini_y = event.y
-
-    def atualizar_oval(self, event):
-        self.fim_x = event.x
-        self.fim_y = event.y
-
-        oval = self.criar_oval(self.fim_x, self.fim_y)
-        self.view.redesenhar(self.desenho.obter_figuras())
-        self.view.desenhar_previa(oval)
-
-    def finalizar_oval(self, event):
-        oval = self.criar_oval(event.x, event.y)
-        self.desenho.adicionar_figura(oval)
-        self.view.redesenhar(self.desenho.obter_figuras())
-
-    def criar_oval(self, fim_x, fim_y):
-        return Oval(
-            self.view.obter_cor_borda(),
-            self.view.obter_cor_preenchimento(),
-            self.ini_x,
-            self.ini_y,
-            fim_x,
-            fim_y
-        )
-
-    # ==========================================
-    # LINHA E RABISCO
-    # ==========================================
-
-    def iniciar_linha_rabisco(self, event):
-        if self.ferramenta_atual == "linha":
-            self.figura_nova = Linha(
-                self.view.obter_cor_borda(),
-                None,
-                event.x,
-                event.y,
-                event.x,
-                event.y
-            )
-        elif self.ferramenta_atual == "rabisco":
-            self.figura_nova = Rabisco(
-                [(event.x, event.y)],
-                self.view.obter_cor_borda()
-            )
-
-    def atualizar_linha_rabisco(self, event):
-        if isinstance(self.figura_nova, Rabisco):
-            self.figura_nova.pontos.append((event.x, event.y))
-        elif isinstance(self.figura_nova, Linha):
-            self.figura_nova.fim_x = event.x
-            self.figura_nova.fim_y = event.y
-
-        self.view.redesenhar(self.desenho.obter_figuras())
-        if self.figura_nova is not None:
-            self.view.desenhar_previa(self.figura_nova)
-
-    def finalizar_linha_rabisco(self, _event):
-        if not self.figura_incompleta(self.figura_nova):
-            self.desenho.adicionar_figura(self.figura_nova)
-
-        self.figura_nova = None
-        self.view.redesenhar(self.desenho.obter_figuras())
-
-    @staticmethod
-    def figura_incompleta(figura):
-        if isinstance(figura, Linha):
-            return (figura.ini_x, figura.ini_y) == (figura.fim_x, figura.fim_y)
-        if isinstance(figura, Rabisco):
-            return len(figura.pontos) <= 1
-        return True
-
-    # ==========================================
-    # POLÍGONO
-    # ==========================================
-
-    def adicionar_ponto_poligono(self, event):
-        self.pontos_poligono.append((event.x, event.y))
-        self.view.redesenhar(self.desenho.obter_figuras())
-
-        if len(self.pontos_poligono) >= 2:
-            previa = Poligono(
-                list(self.pontos_poligono),
-                self.view.obter_cor_borda(),
-                ""
-            )
-            self.view.desenhar_previa(previa)
-
-    def concluir_poligono_em_andamento(self):
-        if not self.pontos_poligono:
+    def salvar_arquivo(self):
+        if self.caminho_arquivo is None:
+            self.salvar_como()
             return
 
-        if len(self.pontos_poligono) >= 3:
-            poligono = Poligono(
-                list(self.pontos_poligono),
-                self.view.obter_cor_borda(),
-                self.view.obter_cor_preenchimento()
-            )
-            self.desenho.adicionar_figura(poligono)
+        self._salvar_no_caminho(self.caminho_arquivo)
 
-        self.pontos_poligono = []
-        self.view.redesenhar(self.desenho.obter_figuras())
+    def salvar_como(self):
+        caminho = self.view.escolher_arquivo_para_salvar()
+        if not caminho:
+            return
+
+        self._salvar_no_caminho(caminho)
+
+    def _salvar_no_caminho(self, caminho):
+        try:
+            self.desenho.salvar_em_arquivo(caminho)
+        except Exception as erro:
+            self.view.mostrar_erro(f"Não foi possível salvar o desenho: {erro}")
+            return
+
+        self.caminho_arquivo = caminho
+        self.view.mostrar_mensagem("Desenho salvo com sucesso.")
+
+    def abrir_arquivo(self):
+        caminho = self.view.escolher_arquivo_para_abrir()
+        if not caminho:
+            return
+
+        try:
+            self.desenho.carregar_de_arquivo(caminho)
+        except Exception as erro:
+            self.view.mostrar_erro(f"Não foi possível abrir o desenho: {erro}")
+            return
+
+        self.estado_atual.cancelar(self)
+        self.caminho_arquivo = caminho
+        self.atualizar_view()
+        self.view.mostrar_mensagem("Desenho aberto com sucesso.")
