@@ -21,7 +21,10 @@ Aplicativo desenvolvido em Python com Tkinter para a disciplina Programação A 
 
 ## Execução
 
-Entre na pasta `src`:
+O programa pode ser iniciado diretamente pelo botão Run da IDE com o arquivo
+`src/app_desenhos/main.py` aberto.
+
+Também é possível executar pelo terminal. Entre na pasta `src`:
 
 ```bash
 cd src
