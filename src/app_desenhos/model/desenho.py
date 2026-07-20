@@ -1,3 +1,4 @@
+import pickle
 from .figuras import Figura
 
 class Desenho:
@@ -21,3 +22,13 @@ class Desenho:
     def desenhar_todos(self, canvas):
         for figura in self._figuras:
             figura.desenhar(canvas)
+    
+    def salvar_em_arquivo(self, caminho_arquivo: str):
+
+        with open(caminho_arquivo, 'wb') as arquivo:
+            pickle.dump(self._figuras, arquivo)
+
+    def carregar_de_arquivo(self, caminho_arquivo: str):
+
+        with open(caminho_arquivo, 'rb') as arquivo:
+            self._figuras = pickle.load(arquivo)
