@@ -5,7 +5,7 @@ class EditorView:
     def __init__(self):
         self.janela = Tk()
         self.janela.title('Editor de Desenhos')
-        self.janela.geometry('600x600')
+        self.janela.geometry('800x600')
 
         self.controlador = None 
 
@@ -16,6 +16,39 @@ class EditorView:
         #Canvas de desenho 
         self.canvas = Canvas(self.janela, bg='white', highlightthickness=1, highlightbackground='gray')
         self.canvas.pack(fill=BOTH, expand=True, side=RIGHT, padx=5, pady=5)
+
+        #Salvar/abrir 
+        titulo_arquivo = Label(self.barra_ferramentas, text='Arquivo', font=('Arial', 10, 'bold'))
+        titulo_arquivo.pack(pady=(5, 2))
+
+        # Botão Salvar 
+        self.btn_salvar = Button(
+            self.barra_ferramentas,
+            text= "💾 Salvar",
+            width=12,
+            command=self.ao_clicar_salvar
+        )
+        self.btn_salvar.pack(pady=2, padx=5)
+
+        # Botão Salvar como 
+        self.btn_salvar_como = Button(
+            self.barra_ferramentas,
+            text="💾 Salvar Como", 
+            width=12,
+            command=self.ao_clicar_salvar_como
+        )
+
+        # Botão Abrir
+        self.btn_abrir = Button(
+            self.barra_ferramentas,
+            text = "📂 Abrir",
+            width=12,
+            command=self.ao_clicar_abrir
+        )
+        self.btn_abrir.pack(pady=2, padx=5)
+
+        divisor_arquivo = Frame(self.barra_ferramentas, height=2, bd=1, relief=SUNKEN)
+        divisor_arquivo.pack(fill=X, pady=10)
 
         titulo_botoes = Label(self.barra_ferramentas, text='Ferramentas')
         titulo_botoes.pack(pady=10)
@@ -60,6 +93,18 @@ class EditorView:
         if self.controlador:
             self.controlador.selecionar_ferramenta(nome_ferramenta)
 
+    def ao_clicar_salvar(self):
+        if self.controlador:
+            self.controlador.salvar_arquivo()
+
+    def ao_clicar_salvar_como(self):
+        if self.controlador:
+            self.controlador.salvar_como()
+                   
+    def ao_clicar_abrir(self):
+        if self. controlador:
+            self.controlador.abrir_arquivo()
+
     def destacar_ferramenta(self, ferramenta):
         for nome, botao in self.botoes.items():
             if nome == ferramenta:
@@ -99,3 +144,7 @@ class EditorView:
 
     def iniciar(self):
         self.janela.mainloop()
+
+if __name__ == "__main__":
+    app = EditorView()
+    app.iniciar()
