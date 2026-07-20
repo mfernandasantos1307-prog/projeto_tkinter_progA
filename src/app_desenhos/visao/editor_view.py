@@ -37,6 +37,8 @@ class EditorView:
             width=12,
             command=self.ao_clicar_salvar_como
         )
+        self.btn_salvar_como.pack(pady=2, padx=5)
+        
 
         # Botão Abrir
         self.btn_abrir = Button(
