@@ -1,11 +1,28 @@
-from tkinter import * 
-from .paleta import PaletaCores
+from tkinter import (
+    BOTH,
+    LEFT,
+    RIGHT,
+    SUNKEN,
+    X,
+    Y,
+    Button,
+    Canvas,
+    Frame,
+    Label,
+    RAISED,
+    Tk,
+)
+from tkinter import filedialog, messagebox
+
+from app_desenhos.visao.paleta import PaletaCores
+
 
 class EditorView:
     def __init__(self):
         self.janela = Tk()
         self.janela.title('Editor de Desenhos')
-        self.janela.geometry('800x600')
+        self.janela.geometry('1000x700')
+        self.janela.minsize(800, 600)
 
         self.controlador = None 
 
@@ -104,8 +121,35 @@ class EditorView:
             self.controlador.salvar_como()
                    
     def ao_clicar_abrir(self):
-        if self. controlador:
+        if self.controlador:
             self.controlador.abrir_arquivo()
+
+    def escolher_arquivo_para_salvar(self):
+        return filedialog.asksaveasfilename(
+            parent=self.janela,
+            title="Salvar desenho",
+            defaultextension=".desenho",
+            filetypes=(
+                ("Arquivo de desenho", "*.desenho"),
+                ("Todos os arquivos", "*.*"),
+            ),
+        )
+
+    def escolher_arquivo_para_abrir(self):
+        return filedialog.askopenfilename(
+            parent=self.janela,
+            title="Abrir desenho",
+            filetypes=(
+                ("Arquivo de desenho", "*.desenho"),
+                ("Todos os arquivos", "*.*"),
+            ),
+        )
+
+    def mostrar_erro(self, mensagem):
+        messagebox.showerror("Editor de Desenhos", mensagem, parent=self.janela)
+
+    def mostrar_mensagem(self, mensagem):
+        messagebox.showinfo("Editor de Desenhos", mensagem, parent=self.janela)
 
     def destacar_ferramenta(self, ferramenta):
         for nome, botao in self.botoes.items():
@@ -146,7 +190,3 @@ class EditorView:
 
     def iniciar(self):
         self.janela.mainloop()
-
-if __name__ == "__main__":
-    app = EditorView()
-    app.iniciar()

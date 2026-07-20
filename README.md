@@ -16,24 +16,32 @@ Aplicativo desenvolvido em Python com Tkinter para a disciplina Programação A 
 - Estrutura orientada a objetos com uma hierarquia de figuras
 - Classe abstrata `Figura`, com implementações específicas para cada figura
 - Organização da aplicação segundo o padrão MVC (Model-View-Controller)
+- Uso do padrão State para representar as ferramentas de desenho
+- Funcionalidades para salvar e abrir desenhos
 
 ## Execução
 
-Na pasta principal do projeto, execute:
+Entre na pasta `src`:
 
 ```bash
-python -m src.app_desenhos.main
+cd src
 ```
 
-No Windows, caso o comando usado para iniciar o Python seja `py`, execute:
+Em seguida, execute:
+
+```bash
+python -m app_desenhos.main
+```
+
+No Windows, caso o comando usado para iniciar o Python seja `py`:
 
 ```powershell
-py -m src.app_desenhos.main
+py -m app_desenhos.main
 ```
 
 ## Estrutura principal
 
 - `src/app_desenhos/main.py`: cria e conecta os componentes da aplicação
-- `src/app_desenhos/model/`: classes do modelo, como `Desenho` e a hierarquia de figuras
+- `src/app_desenhos/model/`: classes do modelo, com cada figura em seu próprio módulo
 - `src/app_desenhos/visao/`: interface gráfica e paleta de cores
-- `src/app_desenhos/controlador/`: controlador das ferramentas e eventos de desenho
+- `src/app_desenhos/controlador/`: controlador e estados das ferramentas de desenho
